@@ -141,60 +141,14 @@ fn spawn_folder_picker(proxy: EventLoopProxy<UserEvent>) {
     });
 }
 
-/// 64×64 lime bolt on a near-black tile, drawn here so the binary carries no
-/// image assets.
+/// The real app icon, rendered from `src/ui/icon.svg` at 64 px. The same image
+/// is embedded in the exe as `assets/icon.ico`, so Explorer, the title bar and
+/// the taskbar all show one logo.
 fn app_icon() -> Icon {
-    const S: usize = 64;
-    let bolt = [
-        (0.60, 0.06),
-        (0.26, 0.56),
-        (0.46, 0.56),
-        (0.40, 0.94),
-        (0.74, 0.42),
-        (0.53, 0.42),
-    ];
-    let mut rgba = vec![0u8; S * S * 4];
-    for y in 0..S {
-        for x in 0..S {
-            let fx = (x as f32 + 0.5) / S as f32;
-            let fy = (y as f32 + 0.5) / S as f32;
-            let i = (y * S + x) * 4;
-            if !inside_rounded_tile(fx, fy, 0.16) {
-                continue;
-            }
-            let on_bolt = point_in_polygon(fx, fy, &bolt);
-            let (r, g, b) = if on_bolt {
-                (205, 245, 100)
-            } else {
-                (14, 14, 16)
-            };
-            rgba[i] = r;
-            rgba[i + 1] = g;
-            rgba[i + 2] = b;
-            rgba[i + 3] = 255;
-        }
-    }
-    Icon::from_rgba(rgba, S as u32, S as u32).expect("icon data is 64×64 RGBA")
-}
-
-fn inside_rounded_tile(x: f32, y: f32, radius: f32) -> bool {
-    let cx = x.clamp(radius, 1.0 - radius);
-    let cy = y.clamp(radius, 1.0 - radius);
-    let dx = x - cx;
-    let dy = y - cy;
-    dx * dx + dy * dy <= radius * radius
-}
-
-fn point_in_polygon(x: f32, y: f32, poly: &[(f32, f32)]) -> bool {
-    let mut inside = false;
-    let mut j = poly.len() - 1;
-    for i in 0..poly.len() {
-        let (xi, yi) = poly[i];
-        let (xj, yj) = poly[j];
-        if (yi > y) != (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi {
-            inside = !inside;
-        }
-        j = i;
-    }
-    inside
+    let png = include_bytes!("../assets/icon-64.png");
+    let image = image::load_from_memory(png)
+        .expect("embedded icon is a PNG")
+        .to_rgba8();
+    let (width, height) = image.dimensions();
+    Icon::from_rgba(image.into_raw(), width, height).expect("embedded icon is RGBA")
 }

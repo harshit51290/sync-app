@@ -175,6 +175,34 @@ pub fn hide_console_window() {
 #[cfg(not(windows))]
 pub fn hide_console_window() {}
 
+/// Hide the console only when this process is its sole owner (a double-click
+/// from Explorer). When launched from a terminal the console is shared with the
+/// shell, so it must stay visible.
+#[cfg(windows)]
+pub fn hide_console_if_private() {
+    use std::ffi::c_void;
+    #[link(name = "kernel32")]
+    unsafe extern "system" {
+        fn GetConsoleWindow() -> *mut c_void;
+        fn GetConsoleProcessList(list: *mut u32, count: u32) -> u32;
+    }
+    #[link(name = "user32")]
+    unsafe extern "system" {
+        fn ShowWindow(hwnd: *mut c_void, cmd: i32) -> i32;
+    }
+    unsafe {
+        let mut pids = [0u32; 8];
+        let attached = GetConsoleProcessList(pids.as_mut_ptr(), pids.len() as u32);
+        let hwnd = GetConsoleWindow();
+        if attached == 1 && !hwnd.is_null() {
+            ShowWindow(hwnd, 0);
+        }
+    }
+}
+
+#[cfg(not(windows))]
+pub fn hide_console_if_private() {}
+
 /// Free space on the volume that holds `path`, in bytes.
 pub fn free_space(path: &Path) -> Option<u64> {
     #[cfg(windows)]

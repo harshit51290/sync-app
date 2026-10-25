@@ -27,11 +27,11 @@ Two halves, one protocol:
 
 ## Quick start
 
-On Windows, download `phonesync-1.0.0-windows-x64.exe` from the release and run it —
-WebView2 is the only requirement. From source instead:
+On Windows, download `phonesync-1.0.0-windows-x64.exe` from the release and double-click
+it — no arguments, no terminal. WebView2 is the only requirement. From source instead:
 
 ```powershell
-cargo run --release -- app
+cargo run --release
 ```
 
 The window opens on the overview: a QR code, the address, and a library that fills as

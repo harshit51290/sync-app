@@ -28,7 +28,7 @@ struct Cli {
     root: Option<PathBuf>,
 
     #[command(subcommand)]
-    cmd: Command,
+    cmd: Option<Command>,
 }
 
 #[derive(Subcommand, Debug)]
@@ -87,6 +87,20 @@ struct ServeArgs {
     name: Option<String>,
 }
 
+impl Default for ServeArgs {
+    fn default() -> Self {
+        Self {
+            port: 8787,
+            bind: "0.0.0.0".into(),
+            open: false,
+            no_qr: false,
+            dashboard: false,
+            hide_console: false,
+            name: None,
+        }
+    }
+}
+
 #[derive(clap::Args, Debug)]
 struct SendArgs {
     /// Files and/or folders to send
@@ -137,6 +151,9 @@ fn launch_app(cfg: config::Config, args: ServeArgs) -> Result<()> {
 }
 
 fn main() -> Result<()> {
+    // Double-clicking the exe passes no arguments: that should open the window,
+    // not print clap's help and vanish.
+    let opened_directly = std::env::args_os().len() == 1;
     let cli = Cli::parse();
     let cfg = config::Config::load(cli.root)?;
 
@@ -148,7 +165,14 @@ fn main() -> Result<()> {
         .compact()
         .init();
 
-    match cli.cmd {
+    let command = cli.cmd.unwrap_or(Command::App(ServeArgs::default()));
+    if opened_directly {
+        // Only hides a console this process owns; a terminal someone launched
+        // it from stays open.
+        util::hide_console_if_private();
+    }
+
+    match command {
         Command::Serve(args) => {
             if args.hide_console {
                 util::hide_console_window();
