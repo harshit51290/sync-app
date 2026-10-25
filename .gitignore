@@ -1,0 +1,26 @@
+# build output
+/target
+
+# local code graph index
+.codegraph/
+
+# receiver state, if you run the server with --root . 
+.phonesync/
+
+# local overrides
+*.local.json
+*.log
+.env
+
+# Android build output and machine-specific SDK path
+/android/local.properties
+/android/build/
+/android/.gradle/
+/android/app/build/
+/android/.kotlin/
+/android/keystore/
+/android/keystore.properties
+/android/RELEASE-KEY.txt
+
+# release artifacts (attached to GitHub releases, not committed)
+/dist/

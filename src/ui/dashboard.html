@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0a0b" />
+    <title>PhoneSync — dashboard</title>
+    <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body class="dash">
+    <div class="shell">
+      <aside class="rail">
+        <div class="brand">
+          <span class="mark"><svg class="ic" data-icon="bolt"></svg></span>
+          PhoneSync
+        </div>
+
+        <nav class="nav" aria-label="Sections">
+          <p class="nav-label">Workspace</p>
+          <button class="nav-item" data-view="overview" aria-current="page">
+            <svg class="ic" data-icon="grid"></svg> Overview
+          </button>
+          <button class="nav-item" data-view="files">
+            <svg class="ic" data-icon="file"></svg> Files
+            <span class="count" id="count-files">0</span>
+          </button>
+          <button class="nav-item" data-view="devices">
+            <svg class="ic" data-icon="phone"></svg> Devices
+            <span class="count" id="count-devices">0</span>
+          </button>
+          <button class="nav-item" data-view="settings">
+            <svg class="ic" data-icon="settings"></svg> Settings
+          </button>
+        </nav>
+
+        <div class="rail-foot">
+          <div class="rail-status">
+            <span class="dot live" id="rail-dot"></span>
+            <span id="rail-status">listening</span>
+          </div>
+          <span id="rail-version">v0.1.0</span>
+          <span id="rail-uptime">uptime —</span>
+          <span style="color: var(--faint)">no cloud, no account</span>
+        </div>
+      </aside>
+
+      <div class="main">
+        <header class="topbar">
+          <h1 id="page-title">Overview</h1>
+          <div class="spacer"></div>
+          <div class="field search">
+            <svg class="ic" data-icon="search"></svg>
+            <input id="search" placeholder="Search files…" autocomplete="off" />
+          </div>
+          <button class="btn ghost" id="open-folder">
+            <svg class="ic" data-icon="folder"></svg><span>Open folder</span>
+          </button>
+          <button class="btn primary" id="show-qr">
+            <svg class="ic" data-icon="phone"></svg><span>Connect phone</span>
+          </button>
+        </header>
+
+        <!-- ---------------------------------------------------------- overview -->
+        <section class="view" id="view-overview">
+          <div class="tiles">
+            <div class="panel tile">
+              <div class="label">
+                <svg class="ic" data-icon="drive" style="width: 14px; height: 14px"></svg>
+                Total received
+              </div>
+              <div class="value" id="tile-total">0 B</div>
+              <div class="sub" id="tile-total-sub">0 files</div>
+            </div>
+            <div class="panel tile">
+              <div class="label">
+                <svg class="ic" data-icon="upload" style="width: 14px; height: 14px"></svg>
+                Today
+              </div>
+              <div class="value" id="tile-today">0</div>
+              <div class="sub" id="tile-today-sub">files · 0 B</div>
+            </div>
+            <div class="panel tile">
+              <div class="label">
+                <svg class="ic" data-icon="laptop" style="width: 14px; height: 14px"></svg>
+                Disk free
+              </div>
+              <div class="value" id="tile-free">—</div>
+              <div class="sub" id="tile-free-sub">on this laptop</div>
+            </div>
+            <div class="panel tile">
+              <div class="label">
+                <svg class="ic" data-icon="wifi" style="width: 14px; height: 14px"></svg>
+                Devices
+              </div>
+              <div class="value" id="tile-devices">0</div>
+              <div class="sub" id="tile-devices-sub">paired over Wi-Fi</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="stack">
+              <div class="panel">
+                <div class="panel-head">
+                  <h2>Last 14 days</h2>
+                  <span class="spacer"></span>
+                  <span class="chip" id="chart-chip">0 B</span>
+                </div>
+                <div class="chart-wrap">
+                  <div class="chart" id="chart"></div>
+                </div>
+                <div class="chart-legend">
+                  <span><b id="chart-peak">0</b> best day</span>
+                  <span><b id="chart-avg">0</b> avg / day</span>
+                  <span style="margin-left: auto">bytes received</span>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-head">
+                  <h2>Live activity</h2>
+                  <span class="spacer"></span>
+                  <span class="chip" id="live-chip"><span class="dot live"></span>live</span>
+                </div>
+                <div class="activity" id="activity">
+                  <div class="empty">
+                    <svg class="ic" data-icon="inbox"></svg>
+                    Waiting for the first file
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack">
+              <div class="panel qr-card">
+                <div class="qr-frame">
+                  <img id="qr-img" alt="QR code to connect a phone" />
+                </div>
+                <div>
+                  <div class="setting-title">Scan to connect</div>
+                  <p class="qr-caption">
+                    Point your phone camera here. Photos you send land straight in
+                    this folder.
+                  </p>
+                </div>
+                <div class="url-box">
+                  <span id="url-text">—</span>
+                  <button class="btn icon quiet" id="copy-url" aria-label="Copy link">
+                    <svg class="ic" data-icon="copy"></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-head">
+                  <h2>Devices</h2>
+                  <span class="spacer"></span>
+                  <span class="chip" id="device-chip">0</span>
+                </div>
+                <div id="device-list"></div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-head"><h2>Storage</h2></div>
+                <div class="panel-body">
+                  <div class="storage-labels" style="margin-bottom: 8px">
+                    <span id="disk-used">0 B used by PhoneSync</span>
+                    <span id="disk-free">— free</span>
+                  </div>
+                  <div class="bar"><i id="disk-bar"></i></div>
+                  <p class="setting-desc" style="margin-top: 10px" id="root-path">
+                    —
+                  </p>
+                  <button class="btn ghost" id="open-folder-2" style="margin-top: 12px">
+                    <svg class="ic" data-icon="external"></svg> Show in Explorer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- files -->
+        <section class="view" id="view-files" hidden>
+          <div class="panel" style="overflow: hidden">
+            <div class="panel-head">
+              <h2>Library</h2>
+              <span class="chip" id="files-count">0 files</span>
+              <span class="spacer"></span>
+              <button class="btn quiet" id="refresh-files" aria-label="Refresh">
+                <svg class="ic" data-icon="refresh"></svg>
+              </button>
+            </div>
+            <div style="overflow: auto; max-height: calc(100dvh - 190px)">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Device</th>
+                    <th>Size</th>
+                    <th>Received</th>
+                    <th class="right"></th>
+                  </tr>
+                </thead>
+                <tbody id="files-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ----------------------------------------------------------- devices -->
+        <section class="view" id="view-devices" hidden>
+          <div id="device-cards" class="tiles" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"></div>
+          <div class="panel">
+            <div class="panel-head"><h2>How a phone connects</h2></div>
+            <div class="panel-body stack" style="gap: 10px">
+              <p class="setting-desc">
+                Both devices must be on the same Wi-Fi. Open the phone camera and
+                scan the code on the Overview tab — the token travels inside the
+                link, so nobody else on the network can upload.
+              </p>
+              <p class="setting-desc">
+                For hands-free background sync, install the PhoneSync app on the
+                phone and pair it with this laptop once. It then watches the camera
+                roll and sends anything new whenever both are on the same Wi-Fi.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------------- settings -->
+        <section class="view" id="view-settings" hidden>
+          <div class="panel">
+            <div class="panel-head"><h2>Storage layout</h2></div>
+            <div class="setting">
+              <div class="setting-main">
+                <div class="setting-title">Where files are placed</div>
+                <div class="setting-desc">
+                  Month buckets keep the library readable. Mirror keeps the phone's
+                  original folder tree. Flat drops everything loose inside the
+                  device folder.
+                </div>
+              </div>
+              <div class="seg" id="seg-organize" role="group" aria-label="Layout">
+                <button data-value="month" aria-pressed="true">Month</button>
+                <button data-value="mirror" aria-pressed="false">Mirror</button>
+                <button data-value="flat" aria-pressed="false">Flat</button>
+              </div>
+            </div>
+            <div class="setting">
+              <div class="setting-main">
+                <div class="setting-title">Skip Android junk</div>
+                <div class="setting-desc">
+                  Ignore thumbnails, .trashed, Android/data and similar noise.
+                </div>
+              </div>
+              <button class="switch" id="sw-junk" role="switch" aria-checked="true"></button>
+            </div>
+            <div class="setting">
+              <div class="setting-main">
+                <div class="setting-title">Sidecar metadata</div>
+                <div class="setting-desc">
+                  Write a small .json next to each file with its origin, hash and
+                  original timestamps.
+                </div>
+              </div>
+              <button class="switch" id="sw-sidecar" role="switch" aria-checked="false"></button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>Receiver</h2></div>
+            <div class="setting">
+              <div class="setting-main">
+                <div class="setting-title">Pause incoming files</div>
+                <div class="setting-desc">
+                  Keeps the server running but refuses new uploads.
+                </div>
+              </div>
+              <button class="switch" id="sw-pause" role="switch" aria-checked="false"></button>
+            </div>
+            <div class="setting">
+              <div class="setting-main">
+                <div class="setting-title">Laptop name</div>
+                <div class="setting-desc">What your phone shows on the sync screen.</div>
+              </div>
+              <div style="display: flex; gap: 8px">
+                <div class="field" style="width: 200px">
+                  <input id="set-name" autocomplete="off" />
+                </div>
+                <button class="btn" id="save-name">Save</button>
+              </div>
+            </div>
+            <div class="setting">
+              <div class="setting-main">
+                <div class="setting-title">Save files to</div>
+                <div class="setting-desc">
+                  Where every received photo and video is written. Existing files
+                  stay put; new ones go to the new folder.
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end">
+                <div class="field" style="width: 300px">
+                  <input id="set-root" autocomplete="off" spellcheck="false" />
+                </div>
+                <button class="btn icon quiet" id="browse-root" aria-label="Choose folder" hidden>
+                  <svg class="ic" data-icon="folder"></svg>
+                </button>
+                <button class="btn" id="save-root">Change</button>
+              </div>
+            </div>
+            <div class="kv">
+              <span class="muted">Free space</span>
+              <span class="v" id="kv-root-free">-</span>
+            </div>
+            <div class="kv">
+              <span class="muted">Access token</span>
+              <span class="v" id="kv-token">-</span>
+            </div>
+            <div class="kv">
+              <span class="muted">Listening on</span>
+              <span class="v" id="kv-port">—</span>
+            </div>
+            <div class="kv">
+              <span class="muted">Version</span>
+              <span class="v" id="kv-version">—</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Start with Windows</h2>
+              <span class="chip">optional</span>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; gap: 12px">
+              <p class="setting-desc">
+                Register a scheduled task so the receiver is already running when
+                the laptop boots. Run this once in PowerShell:
+              </p>
+              <div class="cmd" style="margin: 0">
+                <span id="install-cmd">phonesync service install</span>
+                <button class="btn icon quiet" id="copy-install" aria-label="Copy">
+                  <svg class="ic" data-icon="copy"></svg>
+                </button>
+              </div>
+              <p class="setting-desc">
+                Allow the port through the firewall with
+                <code class="mono">phonesync firewall</code> (run as administrator).
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <dialog
+      id="qr-dialog"
+      style="
+        margin: auto;
+        border: 1px solid var(--line-strong);
+        border-radius: 20px;
+        background: var(--panel);
+        color: var(--ink);
+        padding: 0;
+        width: min(400px, calc(100vw - 32px));
+        box-shadow: var(--shadow);
+      "
+    >
+      <div class="qr-card" style="gap: 12px">
+        <div class="qr-frame" style="max-width: 240px">
+          <img id="qr-img-2" alt="QR code to connect a phone" />
+        </div>
+        <div>
+          <div class="setting-title">Scan with your phone camera</div>
+          <p class="qr-caption">Same Wi-Fi as this laptop. No app install needed.</p>
+        </div>
+        <div class="url-box">
+          <span id="url-text-2">—</span>
+          <button class="btn icon quiet" id="copy-url-2" aria-label="Copy link">
+            <svg class="ic" data-icon="copy"></svg>
+          </button>
+        </div>
+        <form method="dialog" style="width: 100%">
+          <button class="btn ghost" style="width: 100%">Done</button>
+        </form>
+      </div>
+    </dialog>
+
+    <div id="toasts"></div>
+    <script src="/assets/core.js"></script>
+    <script src="/assets/dash.js"></script>
+  </body>
+</html>

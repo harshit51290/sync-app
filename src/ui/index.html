@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>PhoneSync — send to laptop</title>
+    <link rel="manifest" href="/assets/manifest.webmanifest" />
+    <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/icon.svg" />
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="phone-top">
+        <div class="brand">
+          <span class="mark"><svg class="ic" data-icon="bolt"></svg></span>
+          PhoneSync
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center">
+          <div class="conn">
+            <span class="dot" id="conn-dot"></span>
+            <span id="conn-text">connecting</span>
+          </div>
+          <button class="btn icon ghost" id="open-settings" aria-label="Settings">
+            <svg class="ic" data-icon="settings"></svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="hero panel">
+        <div class="hero-head">
+          <div style="min-width: 0">
+            <p class="eyebrow">Syncing to</p>
+            <h1 id="server-name">Looking for laptop…</h1>
+            <div class="file-meta" style="margin-top: 7px">
+              <span id="server-addr" class="mono">—</span>
+            </div>
+          </div>
+          <div class="ring" aria-hidden="true">
+            <svg viewBox="0 0 74 74">
+              <circle class="track" cx="37" cy="37" r="33" />
+              <circle
+                class="fill"
+                id="ring-fill"
+                cx="37"
+                cy="37"
+                r="33"
+                stroke-dasharray="207.3"
+                stroke-dashoffset="207.3"
+              />
+            </svg>
+            <span class="pct" id="ring-pct">0%</span>
+          </div>
+        </div>
+
+        <div class="hero-status">
+          <span class="dot live" id="status-dot"></span>
+          <span id="status">Ready when you are</span>
+        </div>
+        <p class="hero-sub" id="status-sub">
+          Pick photos, videos or any folder. Files are copied to the laptop over
+          Wi-Fi, never through the cloud.
+        </p>
+
+        <div class="bar"><i id="hero-bar"></i></div>
+
+        <div class="hero-actions">
+          <button class="btn primary big" id="pick-media">
+            <svg class="ic" data-icon="upload"></svg>
+            Sync photos &amp; videos
+          </button>
+          <button class="btn ghost" id="pick-folder">
+            <svg class="ic" data-icon="folder"></svg>
+            Folder
+          </button>
+          <button class="btn ghost" id="pick-file">
+            <svg class="ic" data-icon="file"></svg>
+            Any file
+          </button>
+        </div>
+
+        <input id="in-media" type="file" accept="image/*,video/*" multiple hidden />
+        <input id="in-file" type="file" multiple hidden />
+        <input id="in-folder" type="file" webkitdirectory directory multiple hidden />
+      </section>
+
+      <section class="panel" id="queue-panel" hidden>
+        <div class="panel-head">
+          <h2>Transfer</h2>
+          <span class="spacer"></span>
+          <span class="chip" id="queue-stats">0 / 0</span>
+          <button class="btn quiet" id="queue-clear">Clear</button>
+        </div>
+        <ul class="filelist" id="queue"></ul>
+      </section>
+
+      <section class="panel">
+        <details class="disclosure" id="auto-details">
+          <summary>
+            <svg class="ic" data-icon="spark"></svg>
+            Keep it automatic
+            <span class="chip accent" style="margin-left: 4px">Termux</span>
+            <svg class="ic chev" viewBox="0 0 24 24"><use href="#i-chev" /></svg>
+          </summary>
+          <p class="hero-sub" style="padding: 0 18px">
+            Browsers cannot watch your gallery in the background. Install the tiny
+            PhoneSync client once and every new photo is pushed as it appears —
+            even while the screen is off.
+          </p>
+          <div class="steps">
+            <div class="step">Install Termux, then run<br /><code>pkg install rust termux-api</code></div>
+            <div class="step">Copy the client onto the phone (built on the laptop)</div>
+            <div class="step">Start the watcher — it finds this laptop by itself</div>
+          </div>
+          <div class="cmd">
+            <span id="auto-cmd">phonesync send /sdcard/DCIM --watch</span>
+            <button class="btn icon quiet" id="copy-cmd" aria-label="Copy command">
+              <svg class="ic" data-icon="copy"></svg>
+            </button>
+          </div>
+          <div style="height: 14px"></div>
+        </details>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Recently arrived</h2>
+          <span class="spacer"></span>
+          <button class="btn quiet" id="refresh-recent" aria-label="Refresh">
+            <svg class="ic" data-icon="refresh"></svg>
+          </button>
+        </div>
+        <ul class="filelist" id="recent">
+          <li class="empty">
+            <svg class="ic" data-icon="inbox"></svg>
+            Nothing here yet
+          </li>
+        </ul>
+        <div class="storage">
+          <div class="storage-labels">
+            <span id="storage-used">0 B synced</span>
+            <span id="storage-free">— free on laptop</span>
+          </div>
+          <div class="bar slim"><i id="storage-bar"></i></div>
+        </div>
+      </section>
+
+      <p class="phone-foot">PHONESYNC 0.1 · DIRECT OVER YOUR WI-FI</p>
+    </div>
+
+    <div class="dropzone-overlay" id="dropzone">Drop to send to the laptop</div>
+    <div id="toasts"></div>
+
+    <dialog id="settings-dialog" style="
+        margin: auto;
+        border: 1px solid var(--line-strong);
+        border-radius: 18px;
+        background: var(--panel);
+        color: var(--ink);
+        padding: 0;
+        width: min(420px, calc(100vw - 32px));
+        box-shadow: var(--shadow);
+      ">
+      <form method="dialog" id="settings-form">
+        <div class="panel-head"><h2>This phone</h2></div>
+        <div class="panel-body" style="display: flex; flex-direction: column; gap: 14px">
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span class="eyebrow">Device name on the laptop</span>
+            <div class="field">
+              <svg class="ic" data-icon="phone"></svg>
+              <input id="set-device" placeholder="Pixel 7" autocomplete="off" />
+            </div>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span class="eyebrow">Laptop token</span>
+            <div class="field">
+              <svg class="ic" data-icon="shield"></svg>
+              <input id="set-token" placeholder="from the laptop screen" autocomplete="off" />
+            </div>
+          </label>
+          <p class="setting-desc" id="settings-hint">
+            The token is already in the link you scanned. Only change it if the
+            laptop was restarted with a new one.
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px; justify-content: flex-end; padding: 0 18px 18px">
+          <button class="btn ghost" value="cancel" formnovalidate>Cancel</button>
+          <button class="btn primary" id="save-settings" value="save">Save</button>
+        </div>
+      </form>
+    </dialog><script src="/assets/core.js"></script>
+    <script src="/assets/phone.js"></script>
+  </body>
+</html>

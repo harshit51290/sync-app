@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0A0A0B</color>
+    <color name="panel">#111113</color>
+    <color name="panel_hi">#17171B</color>
+    <color name="line">#232327</color>
+    <color name="line_strong">#2E2E34</color>
+    <color name="ink">#ECECEE</color>
+    <color name="muted">#8A8A93</color>
+    <color name="faint">#5F5F68</color>
+    <color name="lime">#CDF564</color>
+    <color name="lime_dim">#2A3312</color>
+    <color name="good">#7EE787</color>
+    <color name="warn">#F5C864</color>
+    <color name="bad">#FF7B72</color>
+</resources>

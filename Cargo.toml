@@ -1,0 +1,66 @@
+[package]
+name = "phonesync"
+version = "1.0.0"
+edition = "2024"
+description = "Auto-sync phone photos, videos and files to a Windows laptop over Wi-Fi"
+license = "MIT"
+
+[[bin]]
+name = "phonesync"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+axum = { version = "0.8", features = ["http1", "tokio", "macros"] }
+bytes = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+clap = { version = "4", features = ["derive", "env"] }
+dirs = "7"
+futures-util = "0.3"
+hex = "0.4"
+local-ip-address = "0.6"
+mdns-sd = "0.21"
+notify = "8"
+percent-encoding = "2"
+qrcode = { version = "0.14", features = ["svg"] }
+reqwest = { version = "0.13", default-features = false, features = [
+    "rustls",
+    "json",
+    "http2",
+    "charset",
+] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.11"
+thiserror = "2"
+tokio = { version = "1", features = [
+    "rt-multi-thread",
+    "macros",
+    "fs",
+    "net",
+    "signal",
+    "time",
+    "sync",
+    "io-util",
+] }
+tokio-util = { version = "0.7", features = ["io"] }
+tower-http = { version = "0.7", features = ["trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4"] }
+walkdir = "2"
+
+# Native window (the desktop app shell). WebView2 ships with Windows 10/11.
+[target.'cfg(windows)'.dependencies]
+rfd = "0.15"
+tao = "0.37"
+wry = "0.57"
+
+[dev-dependencies]
+tempfile = "3"
+tokio = { version = "1", features = ["full"] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+strip = true

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chip_paired">Paired</string>
+    <string name="chip_unpaired">Not paired</string>
+
+    <string name="sync_idle_title">Ready to sync</string>
+    <string name="sync_idle_detail">Your photos and videos go straight to the laptop over Wi-Fi.</string>
+    <string name="run_sent">Sent</string>
+    <string name="run_skipped">Already there</string>
+    <string name="run_failed">Failed</string>
+    <string name="run_header">This run</string>
+
+    <string name="activity">Activity</string>
+    <string name="activity_empty">Nothing yet. Tap Sync now.</string>
+
+    <string name="save">Save</string>
+    <string name="connection_ok">Connected to %1$s</string>
+    <string name="connection_bad">Could not reach the laptop. Check the address and token.</string>
+    <string name="finding">Looking for your laptop…</string>
+    <string name="found_none">No laptop answered on this Wi-Fi. Type the address instead.</string>
+    <string name="test_ok">Connected — %1$s</string>
+    <string name="reset_done">History cleared</string>
+    <string name="version_line">PhoneSync %1$s for Android</string>
+    <string name="about_body">The laptop app must be running. Everything stays on your own Wi-Fi.</string>
+    <string name="stop_sync">Stop</string>
+
+    <string name="scanning">Looking for new files…</string>
+    <string name="nothing_new">Everything is already on the laptop</string>
+    <string name="uploading">Uploading %1$s</string>
+    <string name="offline">No Wi-Fi connection</string>
+    <string name="paused_laptop">The laptop paused sync</string>
+    <string name="sync_error">Sync failed: %1$s</string>
+    <string name="sent_n">Sent %1$d files</string>
+    <string name="name_saved">Phone name updated</string>
+    <string name="not_paired_long">Pair with your laptop first. Open Settings and enter the address shown in the laptop app.</string>
+    <string name="folder_hint_off">Only the folders you tick will be backed up.</string>
+    <string name="folder_hint_on">Photos, videos, audio and downloads from every folder.</string>
+    <string name="empty_folders">No folders found yet. Tap Rescan.</string>
+    <string name="laptop_name">Laptop name</string>
+    <string name="files_count">%1$d files</string>
+
+    <string name="permission_title">Allow access to your files</string>
+    <string name="permission_body">PhoneSync needs the photos permission to read what is on this phone. Tap Sync now and accept the prompt.</string>
+</resources>

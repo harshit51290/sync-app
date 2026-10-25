@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PhoneSync</string>
+
+    <string name="tab_sync">Sync</string>
+    <string name="tab_folders">Folders</string>
+    <string name="tab_settings">Settings</string>
+
+    <string name="sync_now">Sync now</string>
+    <string name="stop">Stop</string>
+    <string name="not_paired">Not paired yet</string>
+    <string name="pair_hint">Open Settings, type the address shown on your laptop, then test the connection.</string>
+    <string name="ready">Ready</string>
+    <string name="ready_hint">Everything from the selected folders is already on the laptop.</string>
+    <string name="syncing">Syncing</string>
+    <string name="paused_offline">Waiting for Wi-Fi</string>
+
+    <string name="folders_title">Folders</string>
+    <string name="folders_sub">Pick what PhoneSync keeps backed up</string>
+    <string name="all_folders">Every folder</string>
+    <string name="all_folders_hint">Sync photos, videos, audio and downloads from all folders.</string>
+    <string name="rescan">Rescan</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="laptop">Laptop</string>
+    <string name="laptop_address">Address</string>
+    <string name="laptop_address_hint">192.168.1.20:8787</string>
+    <string name="token">Access token</string>
+    <string name="token_hint">12 characters from the laptop dashboard</string>
+    <string name="find_laptop">Find laptop</string>
+    <string name="test">Test</string>
+    <string name="sync_section">Sync</string>
+    <string name="auto_sync">Automatic sync</string>
+    <string name="auto_sync_hint">Check for new photos every 15 minutes and right after boot.</string>
+    <string name="wifi_only">Wi-Fi only</string>
+    <string name="wifi_only_hint">Never spend mobile data.</string>
+    <string name="device_name">Phone name</string>
+    <string name="history">History</string>
+    <string name="reset_history">Reset sync history</string>
+    <string name="reset_history_hint">Every file is uploaded again on the next sync. The laptop still skips duplicates.</string>
+    <string name="about">About</string>
+</resources>
