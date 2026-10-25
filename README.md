@@ -3,8 +3,9 @@
 **Your phone's photos, videos and files on your Windows laptop — over your own Wi-Fi.**
 No cloud, no account, no upload limit.
 
-[**Download the Android app**](https://github.com/harshit51290/sync-app/releases/latest) ·
-[Quick start](#quick-start) · [Screenshots](#screenshots) · [How it works](#how-the-transfer-works)
+[**Download for Android**](https://github.com/harshit51290/sync-app/releases/latest/download/PhoneSync-1.0.0.apk) ·
+[**Download for Windows**](https://github.com/harshit51290/sync-app/releases/latest/download/phonesync-1.0.0-windows-x64.exe) ·
+[Quick start](#quick-start) · [Screenshots](#screenshots)
 
 <img src="docs/screenshots/01-overview.png" width="880" alt="PhoneSync desktop window — overview with QR pairing and live activity">
 
@@ -25,6 +26,9 @@ Two halves, one protocol:
 ---
 
 ## Quick start
+
+On Windows, download `phonesync-1.0.0-windows-x64.exe` from the release and run it —
+WebView2 is the only requirement. From source instead:
 
 ```powershell
 cargo run --release -- app
